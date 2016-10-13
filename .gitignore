@@ -1,0 +1,4 @@
+*.pyc
+data/*
+notes
+blog-notes
