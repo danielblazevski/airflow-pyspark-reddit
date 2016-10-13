@@ -1,6 +1,7 @@
 # script to do simple processing of reddit data
 import json
 from sets import Set
+import sys
 
 filename = sys.argv[1]
 authorSet = Set()
