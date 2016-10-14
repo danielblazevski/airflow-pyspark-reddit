@@ -7,8 +7,9 @@ import os
 s3Bucket = 'reddit-comments'
 s3Key = '2007/RC_2007-10'
 redditFile = os.getcwd() + '/data/RC-s3-2007-10'
-#can alternatively wrap methods in functions and use PythonOperator instead of BashOperator
 srcDir = os.getcwd() + '/src/'
+
+sparkSubmit = '/usr/local/spark/bin/spark-submit'
 
 default_args = {
     'owner': 'airflow',
@@ -18,24 +19,21 @@ default_args = {
     'retry_delay': timedelta(minutes=1),
 }
 
-dag = DAG(
-    's3Reddit', default_args=default_args, schedule_interval=timedelta(1))
+dag = DAG('s3RedditPyspark', default_args=default_args, schedule_interval=timedelta(1))
 
 downloadData= BashOperator(
     task_id='download-data',
-    bash_command='python ' + srcDir + 's3-reddit.py ' + s3Bucket + ' ' + s3Key + ' ' + redditFile,
+    bash_command='python ' + srcDir + 'python/s3-reddit.py ' + s3Bucket + ' ' + s3Key + ' ' + redditFile,
     dag=dag)
 
 numUniqueAuthors = BashOperator(
     task_id='Unique-authors',
-    bash_command='python ' + srcDir + 'numUniqueAuthors.py ' + redditFile,
+    bash_command=sparkSubmit + ' ' + srcDir + 'pyspark/numUniqueAuthors.py ' + redditFile,
     dag=dag)
 numUniqueAuthors.set_upstream(downloadData)
 
 averageUpvotes = BashOperator(
 	task_id='average-upvotes',
-	bash_command='python ' + srcDir + 'averageUpvote.py ' + redditFile,
+	bash_command=sparkSubmit + ' ' + srcDir + 'pyspark/averageUpvote.py ' + redditFile,
 	dag=dag)
-
 averageUpvotes.set_upstream(downloadData)
-
