@@ -14,12 +14,13 @@ sparkSubmit = '/usr/local/spark/bin/spark-submit'
 default_args = {
     'owner': 'airflow',
     'depends_on_past': False,
-    'start_date': datetime(2015, 6, 1),
+#    'start_date': datetime(2016, 10, 14, 16, 49),
+	'start_date': datetime.now() - timedelta(seconds=45),
     'retries': 5,
     'retry_delay': timedelta(minutes=1),
 }
 
-dag = DAG('s3RedditPyspark', default_args=default_args, schedule_interval=timedelta(1))
+dag = DAG('s3RedditPyspark', default_args=default_args, schedule_interval=timedelta(seconds=45))
 
 downloadData= BashOperator(
     task_id='download-data',

@@ -15,8 +15,7 @@ f = sc.textFile(filename)
 
 authorCount = f.map(lambda line : json.loads(line)) \
 	.filter(lambda record: 'author' in record) \
-	.map(lambda record: (record['author'], 1)) \
-	.groupByKey() \
+	.groupBy(lambda record: record['author']) \
 	.count()
 
 print('*************** authorCount **********************    ')

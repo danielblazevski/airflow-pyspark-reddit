@@ -13,13 +13,13 @@ srcDir = os.getcwd() + '/src/'
 default_args = {
     'owner': 'airflow',
     'depends_on_past': False,
-    'start_date': datetime(2015, 6, 1),
+    'start_date': datetime(2016, 10, 14, 16, 12),
     'retries': 5,
     'retry_delay': timedelta(minutes=1),
 }
 
 dag = DAG(
-    's3Reddit', default_args=default_args, schedule_interval=timedelta(1))
+    's3Reddit', default_args=default_args, schedule_interval=timedelta(seconds=45))
 
 downloadData= BashOperator(
     task_id='download-data',
